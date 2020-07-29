@@ -1,7 +1,7 @@
 # HaraFlix
 
 ## Overview
-This web app was made in React, based in Netflix interface as model.
+This web app was developed in React, based in Netflix interface as model.
 The app was made during #ImersãoReact week by @alura-cursos, a company that provides a online courses platform.
 Vercel platform was used to deploy the app and the link is https://hara-flix.vercel.app.
 
