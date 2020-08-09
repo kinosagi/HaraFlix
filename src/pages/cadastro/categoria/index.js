@@ -1,56 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import PageDefault from '../../../components/PageDefault';
 import FormField from '../../../components/FormField';
-import { Link } from 'react-router-dom';
+import Button from '../../../components/Button';
 
 // useState é a forma para criar variáveis de controle
-// a função cria um array com a valor da variável (const, lista, objeto, etc) 
+// a função cria um array com a valor da variável (const, lista, objeto, etc)
 // e uma função que permite alterar o valor dela
 
 function CadastroCategoria() {
-
   const [categorias, setCategorias] = useState([]);
   const valoresIniciais = {
     nome: '',
     descricao: '',
-    cor: ''
-  }
+    cor: '',
+  };
   const [values, setValues] = useState(valoresIniciais);
 
   function setValue(chave, valor) {
     setValues({
       ...values,
       [chave]: valor, // Colocar a 'chave' entre [] deixa ela dinâmica para qualquer input
-    })
+    });
   }
 
   function handleChange(infosDoEvento) {
     // const { getAttribute, value } = infosDoEvento.target;
-    // Caso não usasse essa função para extrair os valores de infosDoEvento.target, 
+    // Caso não usasse essa função para extrair os valores de infosDoEvento.target,
     // Seria necessário chamar na função
     // setValue(infosDoEvento.targetget.Attribute('name'), infosDoEvento.target.value);
     setValue(infosDoEvento.target.getAttribute('name'), infosDoEvento.target.value);
 
-    //   // console.log('infosDoEvento', infosDoEvento);
-    //   // 'infos do evento' são informações passadas pelo evento 'onChange'
-    //   // 'target' é o algo no qual a função (onchange) está atuando
-    //   // 'target.value' é o valor alterado no alvo da função
-    //   // setValues(infosDoEvento.target.value)
+    // console.log('infosDoEvento', infosDoEvento);
+    // 'infos do evento' são informações passadas pelo evento 'onChange'
+    // 'target' é o algo no qual a função (onchange) está atuando
+    // 'target.value' é o valor alterado no alvo da função
+    // setValues(infosDoEvento.target.value)
   }
+
+  // useEffect deve chamar uma função e um array
+  // o array indica quando que a função deve acontecer
+  // Caso o array seja vazio, a função ocorrerá somente uma vez
+  useEffect(() => {
+    const URL = 'http://localhost:8080/categorias';
+    fetch(URL)
+      .then(async (respostaDoServidor) => {
+        const resposta = await respostaDoServidor.json();
+        setCategorias([
+          ...resposta,
+        ]);
+      });
+  }, []);
 
   return (
     <PageDefault>
-      <h1>Cadastro de Categoria: {values.nome}</h1>
+      <h1>
+        Cadastro de Categoria:
+        {' '}
+        {values.nome}
+      </h1>
 
       <form onSubmit={function handleSubmit(infosDoEvento) {
         infosDoEvento.preventDefault();
         setCategorias([
           // os '...' são usados para representar todos os itens já existentes
           ...categorias,
-          values
+          values,
         ]);
-        setValues(valoresIniciais)
-      }}>
+        setValues(valoresIniciais);
+      }}
+      >
 
         <FormField
           label="Nome da Categoria"
@@ -59,7 +78,6 @@ function CadastroCategoria() {
           value={values.nome}
           onChange={handleChange}
         />
-
 
         {/* <div>
           <label>
@@ -118,29 +136,32 @@ function CadastroCategoria() {
 
         </div> */}
 
-
-        <button>
+        <Button>
           Cadastrar
-        </button>
+        </Button>
 
       </form>
 
+      {categorias.length === 0 && (
+        <div>
+          Loading...
+        </div>
+      )}
+
       {/* <ul> é para uma lista desordenada e <li> são itens de lista */}
       <ul>
-        {categorias.map((categoria, indice) => {
-          return (
-            <li key={`${categoria}${indice}`}>
-              {categoria.nome}
-            </li>
-          )
-        })}
+        {categorias.map((categoria) => (
+          <li key={`${categoria.nome}`}>
+            {categoria.nome}
+          </li>
+        ))}
       </ul>
 
       <Link to="/">
         Ir para home
       </Link>
     </PageDefault>
-  )
+  );
 }
 
 export default CadastroCategoria;
