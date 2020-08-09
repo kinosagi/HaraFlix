@@ -42,7 +42,9 @@ function CadastroCategoria() {
   // o array indica quando que a função deve acontecer
   // Caso o array seja vazio, a função ocorrerá somente uma vez
   useEffect(() => {
-    const URL = 'http://localhost:8080/categorias';
+    const URL = window.location.hostname.includes('localhost')
+      ? 'http://localhost:8080/categorias'
+      : 'https://hara-flix.herokuapp.com/categorias';
     fetch(URL)
       .then(async (respostaDoServidor) => {
         const resposta = await respostaDoServidor.json();
